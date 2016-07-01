@@ -15,7 +15,9 @@
 * 각 요구사항을 구현하는 것이 중요한 것이 아니라 구현 과정을 통해 학습한 내용을 인식하는 것이 배움에 중요하다. 
 
 ### 요구사항 1 - http://localhost:8080/index.html로 접속시 응답
-* 
+* HTTP Header 텍스트를 추상화한 http.HttpHeader 객체를 만들었다.
+* HttpHeader 객체는 header 텍스트를 파싱해서 가져온다.
+* HttpHeader 에서 요청 URL을 가져와서 정적 파일을 응답하도록 한다.
 
 ### 요구사항 2 - get 방식으로 회원가입
 * 

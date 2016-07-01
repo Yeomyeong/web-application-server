@@ -1,13 +1,18 @@
 package webserver;
 
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.net.Socket;
 
+import action.SignInAction;
+import action.StaticFileReadAction;
+import db.DataBase;
+import http.HttpHeader;
+import http.Request;
+import model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static util.StringUtil.*;
 
 public class RequestHandler extends Thread {
 	private static final Logger log = LoggerFactory.getLogger(RequestHandler.class);
@@ -19,20 +24,42 @@ public class RequestHandler extends Thread {
 	}
 
 	public void run() {
-		log.debug("New Client Connect! Connected IP : {}, Port : {}", connection.getInetAddress(), connection.getPort());
-		
-		try (InputStream in = connection.getInputStream(); OutputStream out = connection.getOutputStream()) {
-			// TODO 사용자 요청에 대한 처리는 이 곳에 구현하면 된다.
-			DataOutputStream dos = new DataOutputStream(out);
-			byte[] body = "Hello World".getBytes();
-			response200Header(dos, body.length);
+		log.debug("New Client Connect! Connected IP : {}, Port : {}",
+				connection.getInetAddress(),
+				connection.getPort());
+
+		try ( InputStream in = connection.getInputStream(); OutputStream out = connection.getOutputStream()) {
+            HttpHeader httpHeader = new HttpHeader(getHttpHeader(in));
+            //log.debug(httpHeader.toString());
+
+            String responseData;
+            Request request = new Request(httpHeader.getRequestURL());
+            if (httpHeader.getRequestURL().startsWith("/user/create")) {
+                responseData = new SignInAction().act(request);
+            } else {
+                responseData = new StaticFileReadAction().act(request);
+            }
+
+            DataOutputStream dos = new DataOutputStream(out);
+            byte[] body = responseData.getBytes();
+            response200Header(dos, body.length);
 			responseBody(dos, body);
 		} catch (IOException e) {
 			log.error(e.getMessage());
 		}
 	}
 
-	private void response200Header(DataOutputStream dos, int lengthOfBodyContent) {
+    private String getHttpHeader(InputStream in) throws IOException {
+        BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+        StringBuilder httpHeaderBuffer = new StringBuilder();
+        String line;
+        while ( isNotEmpty(line = reader.readLine()) ) {
+            httpHeaderBuffer.append(line + "\n");
+        }
+        return httpHeaderBuffer.toString();
+    }
+
+    private void response200Header(DataOutputStream dos, int lengthOfBodyContent) {
 		try {
 			dos.writeBytes("HTTP/1.1 200 OK \r\n");
 			dos.writeBytes("Content-Type: text/html;charset=utf-8\r\n");
