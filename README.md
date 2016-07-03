@@ -10,18 +10,24 @@
 
 ### 요구사항 2 - get 방식으로 회원가입
 * URI path 가 /user/create 로 시작할 경우 회원 가입 하도록 작업.
-* 헤더에서 요청 URI 를 가져오고 요청 URI를 파싱해서 http.Request 객체를 만든다.
-* request 객체에서 map 형식으로 저장되어 있는 파라미터들을 가져와서 유효성 체크를 하고 회원 객체를 만든다.
+* 헤더에서 요청 URI 를 가져오고 요청 URI를 파싱해서 http.HttpRequest 객체를 만든다.
+* httpRequest 객체에서 map 형식으로 저장되어 있는 파라미터들을 가져와서 유효성 체크를 하고 회원 객체를 만든다.
 * 회원 객체를 DataBase라는 임의의 데이터 저장 객체에 저장한다.
 
 #### 막간 리펙토링
 * 요청이 들어오면 어떤 작업을 하고 응답을 내뱉은 공통 규칙을 발견했다. 그래서 Action이라는 인터페이스를 만들었다.
-* Action이라는 인터페이스는 다음의 메서드를 구현해야 한다. String act(Request request)
+* Action이라는 인터페이스는 다음의 메서드를 구현해야 한다. String act(Request httpRequest)
 * 기본 정적 파일을 읽는 부분을 StaticFileReadAction 클래스로 추출했다.
 * 회원 가입하는 부분을 SignInAction 클래스로 추출했다.
 
 ### 요구사항 3 - post 방식으로 회원가입
-* 
+* POST는 HTTP 헤더 이후 빈 공백을 가지는 한 줄(line) 다음부터 데이터가 시작된다.
+* 기존에 빈 공백이 나오면 bufferReader의 readLine을 중단했는데, 
+POST 메서드의 경우에는 헤더의 Contents-length 만큼 읽어오도록 수정했다.
+
+### 막간 리펙토링
+* HttpHeader 클래스와 HttpRequest 클래스가 분리될 이유가 없는것 같아서 둘을 합치고,
+이름을 HttpRequest라고 했다.
 
 ### 요구사항 4 - redirect 방식으로 이동
 * 

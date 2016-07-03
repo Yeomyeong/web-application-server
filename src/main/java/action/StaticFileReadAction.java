@@ -1,6 +1,6 @@
 package action;
 
-import http.Request;
+import http.HttpRequest;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -15,8 +15,8 @@ import static util.StringUtil.isEmpty;
 public class StaticFileReadAction implements Action {
 
     @Override
-    public String act(Request request) {
-        BufferedReader reader = getFileReader(request);
+    public String act(HttpRequest httpRequest) {
+        BufferedReader reader = getFileReader(httpRequest);
         StringBuilder responseData = readFile(reader);
         return responseData.toString();
     }
@@ -41,10 +41,10 @@ public class StaticFileReadAction implements Action {
         return responseData;
     }
 
-    private BufferedReader getFileReader(Request request) {
+    private BufferedReader getFileReader(HttpRequest httpRequest) {
         BufferedReader reader = null;
         try {
-            String fileName = getFileName(request);
+            String fileName = getFileName(httpRequest);
             reader = new BufferedReader(new FileReader(fileName));
         } catch (FileNotFoundException e) {
             log.error(e.getMessage(), e);
@@ -52,10 +52,10 @@ public class StaticFileReadAction implements Action {
         return reader;
     }
 
-    private String getFileName(Request request) {
-        if (isEmpty(request.getPath())) {
+    private String getFileName(HttpRequest httpRequest) {
+        if (isEmpty(httpRequest.getPath())) {
             return "./webapp/index.html";
         }
-        return  "./webapp" + request.getPath();
+        return  "./webapp" + httpRequest.getPath();
     }
 }

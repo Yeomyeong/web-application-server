@@ -5,14 +5,9 @@ import java.net.Socket;
 
 import action.SignInAction;
 import action.StaticFileReadAction;
-import db.DataBase;
-import http.HttpHeader;
-import http.Request;
-import model.User;
+import http.HttpRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import static util.StringUtil.*;
 
 public class RequestHandler extends Thread {
 	private static final Logger log = LoggerFactory.getLogger(RequestHandler.class);
@@ -29,15 +24,14 @@ public class RequestHandler extends Thread {
 				connection.getPort());
 
 		try ( InputStream in = connection.getInputStream(); OutputStream out = connection.getOutputStream()) {
-            HttpHeader httpHeader = new HttpHeader(getHttpHeader(in));
+            HttpRequest httpRequest = new HttpRequest(in);
             //log.debug(httpHeader.toString());
 
             String responseData;
-            Request request = new Request(httpHeader.getRequestURL());
-            if (httpHeader.getRequestURL().startsWith("/user/create")) {
-                responseData = new SignInAction().act(request);
+            if (httpRequest.getRequestURL().startsWith("/user/create")) {
+                responseData = new SignInAction().act(httpRequest);
             } else {
-                responseData = new StaticFileReadAction().act(request);
+                responseData = new StaticFileReadAction().act(httpRequest);
             }
 
             DataOutputStream dos = new DataOutputStream(out);
@@ -48,16 +42,6 @@ public class RequestHandler extends Thread {
 			log.error(e.getMessage());
 		}
 	}
-
-    private String getHttpHeader(InputStream in) throws IOException {
-        BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-        StringBuilder httpHeaderBuffer = new StringBuilder();
-        String line;
-        while ( isNotEmpty(line = reader.readLine()) ) {
-            httpHeaderBuffer.append(line + "\n");
-        }
-        return httpHeaderBuffer.toString();
-    }
 
     private void response200Header(DataOutputStream dos, int lengthOfBodyContent) {
 		try {

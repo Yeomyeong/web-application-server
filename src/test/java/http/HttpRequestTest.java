@@ -8,12 +8,12 @@ import static org.junit.Assert.assertEquals;
 /**
  * Created by wymstar on 6/30/16.
  */
-public class HttpHeaderTest {
-    HttpHeader header;
+public class HttpRequestTest {
+    HttpRequest header;
 
     @Before
     public void setup() {
-        header = new HttpHeader("GET /index.html HTTP/1.1\n" +
+        header = new HttpRequest("GET /index.html HTTP/1.1\n" +
                 "Host: localhost:8080\n" +
                 "Connection: keep-alive\n" +
                 "Cache-Control: max-age=0\n" +
@@ -42,11 +42,11 @@ public class HttpHeaderTest {
 
     @Test
     public void test_host() {
-        assertEquals(header.getAttribute("Host"), "localhost:8080");
+        assertEquals(header.getHeaderData("Host"), "localhost:8080");
     }
 
     @Test
     public void test_cookie() {
-        assertEquals(header.getAttribute("Cookie"), "JSESSIONID=7703E0693FE97516DE16B15866E75E42");
+        assertEquals(header.getHeaderData("Cookie"), "JSESSIONID=7703E0693FE97516DE16B15866E75E42");
     }
 }
