@@ -53,9 +53,11 @@ public class StaticFileReadAction implements Action {
     }
 
     private String getFileName(HttpRequest httpRequest) {
-        if (isEmpty(httpRequest.getPath())) {
+        String path = httpRequest.getPath().replaceAll("^[/]", "");
+
+        if ( isEmpty(path)) {
             return "./webapp/index.html";
         }
-        return  "./webapp" + httpRequest.getPath();
+        return  "./webapp/" + path;
     }
 }
