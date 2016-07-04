@@ -12,6 +12,7 @@ import java.nio.file.Files;
 import java.util.Collection;
 import java.util.Map;
 
+import http.HttpRequest;
 import model.User;
 
 import org.slf4j.Logger;
@@ -34,42 +35,17 @@ public class RequestHandler extends Thread {
 		log.debug("New Client Connect! Connected IP : {}, Port : {}", connection.getInetAddress(), connection.getPort());
 
 		try (InputStream in = connection.getInputStream(); OutputStream out = connection.getOutputStream()) {
-			BufferedReader br = new BufferedReader(new InputStreamReader(in, "UTF-8"));
-			String line = br.readLine();
-			if (line == null) {
-				return;
-			}
+            HttpRequest request = new HttpRequest(in);
 
-			log.debug("request line : {}", line);
-			String[] tokens = line.split(" ");
-
-			int contentLength = 0;
-			boolean logined = false;
-			while (!line.equals("")) {
-				line = br.readLine();
-				log.debug("header : {}", line);
-				
-				if (line.contains("Content-Length")) {
-					contentLength = getContentLength(line);
-				}
-				
-				if (line.contains("Cookie")) {
-					logined = isLogin(line);
-				}
-			}
-
-			String url = getDefaultUrl(tokens);
-			if ("/user/create".equals(url)) {
-				String body = IOUtils.readData(br, contentLength);
-				Map<String, String> params = HttpRequestUtils.parseQueryString(body);
+			if ("/user/create".equals(request.getUrl())) {
+				Map<String, String> params = HttpRequestUtils.parseQueryString(request.getBody());
 				User user = new User(params.get("userId"), params.get("password"), params.get("name"), params.get("email"));
 				log.debug("user : {}", user);
 				DataBase.addUser(user);
 				DataOutputStream dos = new DataOutputStream(out);
 				response302Header(dos);
-			} else if ("/user/login".equals(url)) {
-				String body = IOUtils.readData(br, contentLength);
-				Map<String, String> params = HttpRequestUtils.parseQueryString(body);
+			} else if ("/user/login".equals(request.getUrl())) {
+				Map<String, String> params = HttpRequestUtils.parseQueryString(request.getBody());
 				User user = DataBase.findUserById(params.get("userId"));
 				if (user != null) {
 					if (user.login(params.get("password"))) {
@@ -81,8 +57,8 @@ public class RequestHandler extends Thread {
 				} else {
 					responseResource(out, "/user/login_failed.html");
 				}
-			} else if ("/user/list".equals(url)) {
-				if (!logined) {
+			} else if ("/user/list".equals(request.getUrl())) {
+				if (!request.isLogined()) {
 					responseResource(out, "/user/login.html");
 					return;
 				}
@@ -102,25 +78,17 @@ public class RequestHandler extends Thread {
 				DataOutputStream dos = new DataOutputStream(out);
 				response200Header(dos, body.length);
 				responseBody(dos, body);
-			} else if (url.endsWith(".css")) {
-				responseCssResource(out, url);
+			} else if (request.getUrl().endsWith(".css")) {
+				responseCssResource(out, request.getUrl());
 			} else {
-				responseResource(out, url);
+				responseResource(out, request.getUrl());
 			}
 		} catch (IOException e) {
 			log.error(e.getMessage());
 		}
 	}
 
-	private boolean isLogin(String line) {
-		String[] headerTokens = line.split(":");
-		Map<String, String> cookies = HttpRequestUtils.parseCookies(headerTokens[1].trim());
-		String value = cookies.get("logined");
-		if (value == null) {
-			return false;
-		}
-		return Boolean.parseBoolean(value);
-	}
+
 
 	private void responseResource(OutputStream out, String url) throws IOException {
 		DataOutputStream dos = new DataOutputStream(out);
@@ -134,19 +102,6 @@ public class RequestHandler extends Thread {
 		byte[] body = Files.readAllBytes(new File("./webapp" + url).toPath());
 		response200CssHeader(dos, body.length);
 		responseBody(dos, body);
-	}
-
-	private int getContentLength(String line) {
-		String[] headerTokens = line.split(":");
-		return Integer.parseInt(headerTokens[1].trim());
-	}
-
-	private String getDefaultUrl(String[] tokens) {
-		String url = tokens[1];
-		if (url.equals("/")) {
-			url = "/index.html";
-		}
-		return url;
 	}
 
 	private void response200Header(DataOutputStream dos, int lengthOfBodyContent) {
