@@ -42,6 +42,7 @@ public class RequestHandler extends Thread {
 				User user = new User(params.get("userId"), params.get("password"), params.get("name"), params.get("email"));
 				log.debug("user : {}", user);
 				DataBase.addUser(user);
+
 				DataOutputStream dos = new DataOutputStream(out);
 				response302Header(dos);
 			} else if ("/user/login".equals(request.getUrl())) {
@@ -74,6 +75,7 @@ public class RequestHandler extends Thread {
 					sb.append("</tr>");
 				}
 				sb.append("</table>");
+
 				byte[] body = sb.toString().getBytes();
 				DataOutputStream dos = new DataOutputStream(out);
 				response200Header(dos, body.length);

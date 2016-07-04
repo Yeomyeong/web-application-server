@@ -6,6 +6,7 @@ import util.HttpRequestUtils;
 import util.IOUtils;
 
 import java.io.*;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -14,10 +15,13 @@ import java.util.Map;
 public class HttpRequest {
     private static final Logger log = LoggerFactory.getLogger(HttpRequest.class);
 
+    private String method = "";
     private String url = "";
+    private String httpVersion = "";
     private int contentLength = 0;
     private boolean logined = false;
     private String body = "";
+    private Map<String, String> headers = new HashMap<>();
 
 
     public HttpRequest(InputStream in) {
@@ -26,31 +30,41 @@ public class HttpRequest {
             if (reader == null) {
                 return;
             }
-            String line = reader.readLine();
-            if (line == null) {
+            String firstLine = reader.readLine();
+            if (firstLine == null) {
                 return;
             }
+            log.debug("request line : {}", firstLine);
+            String[] tokens = firstLine.split(" ");
+            method = tokens[0];
+            url = getDefaultUrl(tokens);
+            httpVersion = tokens[2];
 
-            log.debug("request line : {}", line);
-            String[] tokens = line.split(" ");
-
+            String line = firstLine;
             while (!line.equals("")) {
                 line = reader.readLine();
                 log.debug("header : {}", line);
 
+                setHeaders(line);
+
                 if (line.contains("Content-Length")) {
                     contentLength = getContentLength(line);
                 }
-
                 if (line.contains("Cookie")) {
                     logined = isLogin(line);
                 }
             }
 
-            url = getDefaultUrl(tokens);
             body = IOUtils.readData(reader, contentLength);
         } catch (IOException e) {
             log.error(e.getMessage(), e);
+        }
+    }
+
+    private void setHeaders(String line) {
+        String[] keyValue = line.split(":");
+        if (keyValue.length == 2) {
+            headers.put(keyValue[0].trim(), keyValue[1].trim());
         }
     }
 
@@ -86,6 +100,10 @@ public class HttpRequest {
         return Boolean.parseBoolean(value);
     }
 
+    public String getHeader(String name) {
+        return headers.get(name);
+    }
+
     public String getUrl() {
         return url;
     }
@@ -100,5 +118,13 @@ public class HttpRequest {
 
     public String getBody() {
         return body;
+    }
+
+    public String getMethod() {
+        return method;
+    }
+
+    public String getHttpVersion() {
+        return httpVersion;
     }
 }
