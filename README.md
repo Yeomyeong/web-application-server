@@ -25,9 +25,10 @@
 * 기존에 빈 공백이 나오면 bufferReader의 readLine을 중단했는데, 
 POST 메서드의 경우에는 헤더의 Contents-length 만큼 읽어오도록 수정했다.
 
-### 막간 리펙토링
+#### 막간 리펙토링
 * HttpHeader 클래스와 HttpRequest 클래스가 분리될 이유가 없는것 같아서 둘을 합치고,
 이름을 HttpRequest라고 했다.
+* HttpResponse 클래스를 추출해냈다.
 
 ### 요구사항 4 - redirect 방식으로 이동
 * 

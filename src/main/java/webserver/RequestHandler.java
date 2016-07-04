@@ -6,6 +6,7 @@ import java.net.Socket;
 import action.SignInAction;
 import action.StaticFileReadAction;
 import http.HttpRequest;
+import http.HttpResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,7 +26,6 @@ public class RequestHandler extends Thread {
 
 		try ( InputStream in = connection.getInputStream(); OutputStream out = connection.getOutputStream()) {
             HttpRequest httpRequest = new HttpRequest(in);
-            //log.debug(httpHeader.toString());
 
             String responseData;
             if (httpRequest.getRequestURL().startsWith("/user/create")) {
@@ -34,30 +34,8 @@ public class RequestHandler extends Thread {
                 responseData = new StaticFileReadAction().act(httpRequest);
             }
 
-            DataOutputStream dos = new DataOutputStream(out);
-            byte[] body = responseData.getBytes();
-            response200Header(dos, body.length);
-			responseBody(dos, body);
-		} catch (IOException e) {
-			log.error(e.getMessage());
-		}
-	}
-
-    private void response200Header(DataOutputStream dos, int lengthOfBodyContent) {
-		try {
-			dos.writeBytes("HTTP/1.1 200 OK \r\n");
-			dos.writeBytes("Content-Type: text/html;charset=utf-8\r\n");
-			dos.writeBytes("Content-Length: " + lengthOfBodyContent + "\r\n");
-			dos.writeBytes("\r\n");
-		} catch (IOException e) {
-			log.error(e.getMessage());
-		}
-	}
-	
-	private void responseBody(DataOutputStream dos, byte[] body) {
-		try {
-			dos.write(body, 0, body.length);
-			dos.flush();
+			HttpResponse httpResponse = new HttpResponse(out);
+			httpResponse.write(responseData);
 		} catch (IOException e) {
 			log.error(e.getMessage());
 		}
