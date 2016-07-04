@@ -16,7 +16,8 @@
 
 #### 막간 리펙토링
 * 요청이 들어오면 어떤 작업을 하고 응답을 내뱉은 공통 규칙을 발견했다. 그래서 Action이라는 인터페이스를 만들었다.
-* Action이라는 인터페이스는 다음의 메서드를 구현해야 한다. String act(Request httpRequest)
+* Action이라는 인터페이스는 다음의 메서드를 구현해야 한다. 
+`String act(Request httpRequest)`
 * 기본 정적 파일을 읽는 부분을 StaticFileReadAction 클래스로 추출했다.
 * 회원 가입하는 부분을 SignInAction 클래스로 추출했다.
 
@@ -29,9 +30,13 @@ POST 메서드의 경우에는 헤더의 Contents-length 만큼 읽어오도록 
 * HttpHeader 클래스와 HttpRequest 클래스가 분리될 이유가 없는것 같아서 둘을 합치고,
 이름을 HttpRequest라고 했다.
 * HttpResponse 클래스를 추출해냈다.
+* Action 인터페이스의 act 메서드의 시그니처를 수정했다.
+`void act(HttpRequest httpRequest, HttpResponse response)`
+* act 메서드에서 응답을 처리하는 일 까지 하기 위함이다.
 
 ### 요구사항 4 - redirect 방식으로 이동
-* 
+* HttpResponse 클래스에 redirect 메서드(status code : 302)를 추가했다.
+* SignInAction을 회원 가입 성공시 redirect 하도록 수정했다.
 
 ### 요구사항 5 - cookie
 * 

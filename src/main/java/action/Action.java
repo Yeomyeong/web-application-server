@@ -1,6 +1,7 @@
 package action;
 
 import http.HttpRequest;
+import http.HttpResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -10,5 +11,5 @@ import org.slf4j.LoggerFactory;
 public interface Action {
     Logger log = LoggerFactory.getLogger(Action.class);
 
-    String act(HttpRequest httpRequest);
+    void act(HttpRequest httpRequest, HttpResponse response);
 }

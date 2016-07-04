@@ -26,16 +26,16 @@ public class RequestHandler extends Thread {
 
 		try ( InputStream in = connection.getInputStream(); OutputStream out = connection.getOutputStream()) {
             HttpRequest httpRequest = new HttpRequest(in);
+			HttpResponse httpResponse = new HttpResponse(out);
 
             String responseData;
             if (httpRequest.getRequestURL().startsWith("/user/create")) {
-                responseData = new SignInAction().act(httpRequest);
+                new SignInAction().act(httpRequest, httpResponse);
             } else {
-                responseData = new StaticFileReadAction().act(httpRequest);
+                new StaticFileReadAction().act(httpRequest, httpResponse);
             }
 
-			HttpResponse httpResponse = new HttpResponse(out);
-			httpResponse.write(responseData);
+
 		} catch (IOException e) {
 			log.error(e.getMessage());
 		}

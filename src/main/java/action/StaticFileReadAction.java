@@ -1,6 +1,7 @@
 package action;
 
 import http.HttpRequest;
+import http.HttpResponse;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -15,10 +16,11 @@ import static util.StringUtil.isEmpty;
 public class StaticFileReadAction implements Action {
 
     @Override
-    public String act(HttpRequest httpRequest) {
+    public void act(HttpRequest httpRequest, HttpResponse response) {
         BufferedReader reader = getFileReader(httpRequest);
         StringBuilder responseData = readFile(reader);
-        return responseData.toString();
+
+        response.write(responseData.toString());
     }
 
     private StringBuilder readFile(BufferedReader reader) {
