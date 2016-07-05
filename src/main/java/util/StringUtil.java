@@ -31,4 +31,20 @@ public class StringUtil {
             return s;
         }
     }
+
+    public static String nvl(String s) {
+        if (isEmpty(s))
+            return "";
+        return s;
+    }
+
+    public static Pair seperateBy(String source, String delimiter) {
+        int splitIndex = source.indexOf(delimiter);
+        if (splitIndex > 0) {
+            String key = source.substring(0, splitIndex);
+            String value = source.substring(splitIndex+1);
+            return new Pair(key, value);
+        }
+        return null;
+    }
 }

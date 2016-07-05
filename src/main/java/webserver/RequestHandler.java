@@ -3,6 +3,7 @@ package webserver;
 import java.io.*;
 import java.net.Socket;
 
+import action.LogInAction;
 import action.SignInAction;
 import action.StaticFileReadAction;
 import http.HttpRequest;
@@ -28,13 +29,13 @@ public class RequestHandler extends Thread {
             HttpRequest httpRequest = new HttpRequest(in);
 			HttpResponse httpResponse = new HttpResponse(out);
 
-            String responseData;
             if (httpRequest.getRequestURL().startsWith("/user/create")) {
                 new SignInAction().act(httpRequest, httpResponse);
+            } else if (httpRequest.getPath().equals("/user/login")) {
+                new LogInAction().act(httpRequest, httpResponse);
             } else {
                 new StaticFileReadAction().act(httpRequest, httpResponse);
             }
-
 
 		} catch (IOException e) {
 			log.error(e.getMessage());

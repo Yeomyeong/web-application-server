@@ -3,12 +3,15 @@ package http;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import util.IOUtils;
+import util.Pair;
 
 import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
 
 import static util.StringUtil.isNotEmpty;
+import static util.StringUtil.nvl;
+import static util.StringUtil.seperateBy;
 
 /**
  * Created by wymstar on 6/30/16.
@@ -22,6 +25,7 @@ public class HttpRequest {
     private String path = "";
     private String data = "";
 
+    public Map<String, String> cookies = new HashMap<>();
     public Map<String, String> headerData = new HashMap<>();
     public Map<String, String> parameters = new HashMap<>();
 
@@ -41,7 +45,6 @@ public class HttpRequest {
 
     private void parse(String headerText) {
         BufferedReader reader = new BufferedReader(new StringReader(headerText));
-
         parse(reader);
     }
 
@@ -79,6 +82,7 @@ public class HttpRequest {
                 }
             }
             this.putIntoParameter();
+            this.setCookies();
 
         } catch ( IOException e) {
             log.error(this.toString() + e.getMessage(), e);
@@ -86,6 +90,16 @@ public class HttpRequest {
             log.error(this.toString() + e.getMessage(), e);
             throw new IllegalHttpHeaderException();
         }
+    }
+
+    private void setCookies() {
+        String rawCookies = nvl(headerData.get("Cookie"));
+        for (String rawCookie : rawCookies.split(";")) {
+            Pair pair = seperateBy(rawCookie, "=");
+            if (pair != null)
+                cookies.put(pair.getKey(), pair.getValue());
+        }
+
     }
 
     public String getRequestURL() {
@@ -106,6 +120,10 @@ public class HttpRequest {
 
     public String getParameter(String key) {
         return parameters.get(key);
+    }
+
+    public String getCookie(String key) {
+        return cookies.get(key);
     }
 
     public String getData() {

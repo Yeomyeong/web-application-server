@@ -6,6 +6,9 @@ import org.slf4j.LoggerFactory;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  * Created by wymstar on 7/4/16.
@@ -13,6 +16,7 @@ import java.io.OutputStream;
 public class HttpResponse {
     private static final Logger log = LoggerFactory.getLogger(HttpResponse.class);
     private DataOutputStream dos;
+    private Map<String, String> cookies = new LinkedHashMap<>();
 
     public HttpResponse(OutputStream dos) {
         this.dos = new DataOutputStream(dos);
@@ -28,10 +32,16 @@ public class HttpResponse {
         try {
             dos.writeBytes("HTTP/1.1 302 Found \r\n");
             dos.writeBytes("Location: "+ redirectUrl +"\r\n");
+            responseSetCookie();
             dos.writeBytes("\r\n");
+            dos.flush();
         } catch (IOException e) {
             log.error(e.getMessage());
         }
+    }
+
+    public void addCookie(String key, String value) {
+        cookies.put(key, value);
     }
 
     private void response200Header(int lengthOfBodyContent) {
@@ -39,10 +49,33 @@ public class HttpResponse {
             dos.writeBytes("HTTP/1.1 200 OK \r\n");
             dos.writeBytes("Content-Type: text/html;charset=utf-8\r\n");
             dos.writeBytes("Content-Length: " + lengthOfBodyContent + "\r\n");
+            responseSetCookie();
             dos.writeBytes("\r\n");
         } catch (IOException e) {
             log.error(e.getMessage());
         }
+    }
+
+    private void responseSetCookie() {
+        try {
+            if (cookies.size() > 0) {
+                dos.writeBytes("Set-Cookie: " + writeCookies(cookies));
+            }
+        } catch (IOException e) {
+            log.error(e.getMessage());
+        }
+    }
+
+    private String writeCookies(Map<String, String> cookies) {
+        StringBuilder cookieString = new StringBuilder();
+        for (String key : cookies.keySet()) {
+            String value = cookies.get(key);
+            if (cookieString.length() == 0)
+                cookieString.append(key).append("=").append(value);
+            else
+                cookieString.append("; ").append(key).append("=").append(value);
+        }
+        return cookieString.toString();
     }
 
     private void responseBody(byte[] body) {

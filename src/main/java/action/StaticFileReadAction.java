@@ -8,6 +8,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 
+import static action.ActionUtil.readFile;
 import static util.StringUtil.isEmpty;
 
 /**
@@ -17,41 +18,7 @@ public class StaticFileReadAction implements Action {
 
     @Override
     public void act(HttpRequest httpRequest, HttpResponse response) {
-        BufferedReader reader = getFileReader(httpRequest);
-        StringBuilder responseData = readFile(reader);
-
-        response.write(responseData.toString());
-    }
-
-    private StringBuilder readFile(BufferedReader reader) {
-        StringBuilder responseData = new StringBuilder();
-        if (reader == null) {
-            responseData.append("404 error");
-            return responseData;
-        }
-
-        String line;
-        try {
-            while ((line = reader.readLine()) != null) {
-                responseData.append(line + "\n");
-            }
-        } catch (IOException e) {
-            log.error(e.getMessage(), e);
-            responseData = new StringBuilder();
-            responseData.append("500 error");
-        }
-        return responseData;
-    }
-
-    private BufferedReader getFileReader(HttpRequest httpRequest) {
-        BufferedReader reader = null;
-        try {
-            String fileName = getFileName(httpRequest);
-            reader = new BufferedReader(new FileReader(fileName));
-        } catch (FileNotFoundException e) {
-            log.error(e.getMessage(), e);
-        }
-        return reader;
+        readFile(response, getFileName(httpRequest) );
     }
 
     private String getFileName(HttpRequest httpRequest) {
