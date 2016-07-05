@@ -3,10 +3,7 @@ package webserver;
 import java.io.*;
 import java.net.Socket;
 
-import action.LogInAction;
-import action.SignInAction;
-import action.StaticFileReadAction;
-import action.UserListAction;
+import action.*;
 import http.HttpRequest;
 import http.HttpResponse;
 import org.slf4j.Logger;
@@ -27,18 +24,11 @@ public class RequestHandler extends Thread {
 				connection.getPort());
 
 		try ( InputStream in = connection.getInputStream(); OutputStream out = connection.getOutputStream()) {
-            HttpRequest httpRequest = new HttpRequest(in);
-			HttpResponse httpResponse = new HttpResponse(out);
+            HttpRequest request = new HttpRequest(in);
+			HttpResponse response = new HttpResponse(out);
 
-            if (httpRequest.getRequestURL().startsWith("/user/create")) {
-                new SignInAction().act(httpRequest, httpResponse);
-            } else if (httpRequest.getPath().equals("/user/login")) {
-                new LogInAction().act(httpRequest, httpResponse);
-            } else if (httpRequest.getPath().equals("/user/list")) {
-                new UserListAction().act(httpRequest, httpResponse);
-            } else {
-                new StaticFileReadAction().act(httpRequest, httpResponse);
-            }
+            Action action = RequestMapper.createAction(request, response);
+            action.act(request, response);
 
 		} catch (IOException e) {
 			log.error(e.getMessage());

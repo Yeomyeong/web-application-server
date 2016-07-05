@@ -18,7 +18,7 @@ public class StaticFileReadAction implements Action {
 
     @Override
     public void act(HttpRequest httpRequest, HttpResponse response) {
-        readFile(response, getFileName(httpRequest) );
+        readFile(response, getFileName(httpRequest), httpRequest.getHeaderData("Accept") );
     }
 
     private String getFileName(HttpRequest httpRequest) {

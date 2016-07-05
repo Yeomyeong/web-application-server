@@ -23,8 +23,16 @@ public class HttpResponse {
     }
 
     public void write (String data) {
+        write(data, "");
+    }
+
+    public void write (String data, String accept) {
         byte[] body = data.getBytes();
-        response200Header(body.length);
+        if (accept.contains("text/css")) {
+            responseCSS200Header(body.length);
+        } else {
+            response200Header(body.length);
+        }
         responseBody(body);
     }
 
@@ -44,10 +52,26 @@ public class HttpResponse {
         cookies.put(key, value);
     }
 
+    public void removeCookie(String key) {
+        cookies.remove(key);
+    }
+
     private void response200Header(int lengthOfBodyContent) {
         try {
             dos.writeBytes("HTTP/1.1 200 OK \r\n");
             dos.writeBytes("Content-Type: text/html;charset=utf-8\r\n");
+            dos.writeBytes("Content-Length: " + lengthOfBodyContent + "\r\n");
+            responseSetCookie();
+            dos.writeBytes("\r\n");
+        } catch (IOException e) {
+            log.error(e.getMessage());
+        }
+    }
+
+    private void responseCSS200Header(int lengthOfBodyContent) {
+        try {
+            dos.writeBytes("HTTP/1.1 200 OK \r\n");
+            dos.writeBytes("Content-Type: text/css;charset=utf-8\r\n");
             dos.writeBytes("Content-Length: " + lengthOfBodyContent + "\r\n");
             responseSetCookie();
             dos.writeBytes("\r\n");

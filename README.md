@@ -48,7 +48,9 @@ POST 메서드의 경우에는 헤더의 Contents-length 만큼 읽어오도록 
 * UserListAction 을 구현한다.
 
 ### 요구사항 7 - stylesheet 적용
-* 
+* HttpRequest Header의 Accept를 가지고 response의 content-type 을 설정하도록 수정
 
-### heroku 서버에 배포 후
-* 
+##현재 문제 (2016.07.06)
+* 로그인 실패 페이지가 안됨.
+* Cookie 컨트롤이 안됨.
+* 의미있는 테스트 코드가 거의 없음.

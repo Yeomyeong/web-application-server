@@ -16,12 +16,15 @@ public class ActionUtil {
     static Logger log = LoggerFactory.getLogger(ActionUtil.class);
 
     static void readFile(HttpResponse response, String fileName) {
+        readFile(response, fileName, "");
+    }
+
+    static void readFile(HttpResponse response, String fileName, String accept) {
         BufferedReader reader = getBufferedReader(fileName);
 
         StringBuilder responseData = new StringBuilder();
         if (reader == null) {
-            responseData.append("404 error");
-            response.write(responseData.toString());
+            write404(response);
             return;
         }
 
@@ -32,11 +35,22 @@ public class ActionUtil {
             }
         } catch (IOException e) {
             log.error(e.getMessage(), e);
-            responseData = new StringBuilder();
-            responseData.append("500 error");
+            write500(response);
+            return;
         }
-        response.write(responseData.toString());
+        response.write(responseData.toString(), accept);
+    }
 
+    private static void write500( HttpResponse response ) {
+        StringBuilder responseData = new StringBuilder();
+        responseData.append("500 error");
+        response.write(responseData.toString());
+    }
+
+    private static void write404( HttpResponse response ) {
+        StringBuilder responseData = new StringBuilder();
+        responseData.append("404 error");
+        response.write(responseData.toString());
     }
 
     private static BufferedReader getBufferedReader(String fileName) {
