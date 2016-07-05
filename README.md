@@ -39,7 +39,10 @@ POST 메서드의 경우에는 헤더의 Contents-length 만큼 읽어오도록 
 * SignInAction을 회원 가입 성공시 redirect 하도록 수정했다.
 
 ### 요구사항 5 - cookie
-* 
+* HttpResponse 에 setCookie 하는 메서드를 추가했다.
+* HttpRequest 에 Map 으로 쿠키를 읽는다.
+* LoginAction 에서 로그인에 성공할 경우 logined=true 쿠키를 추가하고 index.html로 리다이렉트한다.
+* 아이디가 없거나 비번이 안맞을 경우 logined=false 쿠키를 추가하고 로그인 실패 페이지를 연다.
 
 ### 요구사항 6 - stylesheet 적용
 * 
