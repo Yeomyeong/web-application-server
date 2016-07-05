@@ -44,7 +44,10 @@ POST 메서드의 경우에는 헤더의 Contents-length 만큼 읽어오도록 
 * LoginAction 에서 로그인에 성공할 경우 logined=true 쿠키를 추가하고 index.html로 리다이렉트한다.
 * 아이디가 없거나 비번이 안맞을 경우 logined=false 쿠키를 추가하고 로그인 실패 페이지를 연다.
 
-### 요구사항 6 - stylesheet 적용
+### 요구사항 6 - 로그인 했을 때 사용자 리스트 보여주기
+* UserListAction 을 구현한다.
+
+### 요구사항 7 - stylesheet 적용
 * 
 
 ### heroku 서버에 배포 후

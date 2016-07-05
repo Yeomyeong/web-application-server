@@ -25,7 +25,7 @@ public class SignInAction implements Action {
         User user = new User(request.getParameter("userId"),
                 request.getParameter("password"),
                 decode(request.getParameter("name")),
-                request.getParameter("email"));
+                decode(request.getParameter("email")));
         DataBase.addUser(user);
     }
 

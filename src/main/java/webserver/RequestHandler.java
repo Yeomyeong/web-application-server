@@ -6,6 +6,7 @@ import java.net.Socket;
 import action.LogInAction;
 import action.SignInAction;
 import action.StaticFileReadAction;
+import action.UserListAction;
 import http.HttpRequest;
 import http.HttpResponse;
 import org.slf4j.Logger;
@@ -33,6 +34,8 @@ public class RequestHandler extends Thread {
                 new SignInAction().act(httpRequest, httpResponse);
             } else if (httpRequest.getPath().equals("/user/login")) {
                 new LogInAction().act(httpRequest, httpResponse);
+            } else if (httpRequest.getPath().equals("/user/list")) {
+                new UserListAction().act(httpRequest, httpResponse);
             } else {
                 new StaticFileReadAction().act(httpRequest, httpResponse);
             }

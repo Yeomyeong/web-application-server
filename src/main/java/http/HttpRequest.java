@@ -25,9 +25,9 @@ public class HttpRequest {
     private String path = "";
     private String data = "";
 
-    public Map<String, String> cookies = new HashMap<>();
-    public Map<String, String> headerData = new HashMap<>();
-    public Map<String, String> parameters = new HashMap<>();
+    private Map<String, String> cookies = new HashMap<>();
+    private Map<String, String> headerData = new HashMap<>();
+    private Map<String, String> parameters = new HashMap<>();
 
     public HttpRequest(InputStream connectionIn) {
         parse(connectionIn);
