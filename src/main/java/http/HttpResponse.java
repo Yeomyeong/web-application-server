@@ -83,7 +83,7 @@ public class HttpResponse {
     private void responseSetCookie() {
         try {
             if (cookies.size() > 0) {
-                dos.writeBytes("Set-Cookie: " + writeCookies(cookies));
+                dos.writeBytes("Set-Cookie: " + writeCookies(cookies)+ "\r\n");
             }
         } catch (IOException e) {
             log.error(e.getMessage());

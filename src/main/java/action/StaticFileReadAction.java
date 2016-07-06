@@ -3,11 +3,6 @@ package action;
 import http.HttpRequest;
 import http.HttpResponse;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-
 import static action.ActionUtil.readFile;
 import static util.StringUtil.isEmpty;
 
@@ -18,7 +13,7 @@ public class StaticFileReadAction implements Action {
 
     @Override
     public void act(HttpRequest httpRequest, HttpResponse response) {
-        readFile(response, getFileName(httpRequest), httpRequest.getHeaderData("Accept") );
+        readFile(response, getFileName(httpRequest), httpRequest.getHeader("Accept") );
     }
 
     private String getFileName(HttpRequest httpRequest) {

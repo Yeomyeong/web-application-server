@@ -26,7 +26,7 @@ public class HttpRequest {
     private String data = "";
 
     private Map<String, String> cookies = new HashMap<>();
-    private Map<String, String> headerData = new HashMap<>();
+    private Map<String, String> headers = new HashMap<>();
     private Map<String, String> parameters = new HashMap<>();
 
     public HttpRequest(InputStream connectionIn) {
@@ -56,15 +56,15 @@ public class HttpRequest {
                 if (splitIndex > 0) {
                     String key = line.substring(0, splitIndex);
                     String value = line.substring(splitIndex+1);
-                    this.headerData.put(key.trim(), value.trim());
+                    this.headers.put(key.trim(), value.trim());
                 }
             }
 
-            String host = headerData.get("Host");
+            String host = headers.get("Host");
             String path = requestURL.replaceAll("http[s]?://", "").replaceAll(host, "");
             this.path = path;
             if ("POST".equals(method)) {
-                int contentLength = Integer.parseInt(headerData.get("Content-Length"));
+                int contentLength = Integer.parseInt(headers.get("Content-Length"));
                 this.data = IOUtils.readData(reader, contentLength);
             } else if ("GET".equals(method)) {
                 int splitIndex = requestURL.indexOf("?");
@@ -85,7 +85,7 @@ public class HttpRequest {
     }
 
     private void setCookies() {
-        String rawCookies = nvl(headerData.get("Cookie"));
+        String rawCookies = nvl(headers.get("Cookie"));
         for (String rawCookie : rawCookies.split(";")) {
             Pair pair = seperateBy(rawCookie, "=");
             if (pair != null)
@@ -106,8 +106,16 @@ public class HttpRequest {
         return httpVersion;
     }
 
-    public String getHeaderData(String key) {
-        return headerData.get(key);
+    public String getData() {
+        return data;
+    }
+
+    public String getPath() {
+        return path;
+    }
+
+    public String getHeader(String key) {
+        return headers.get(key);
     }
 
     public String getParameter(String key) {
@@ -116,14 +124,6 @@ public class HttpRequest {
 
     public String getCookie(String key) {
         return cookies.get(key);
-    }
-
-    public String getData() {
-        return data;
-    }
-
-    public String getPath() {
-        return path;
     }
 
     private void putIntoParameter() {
@@ -141,6 +141,6 @@ public class HttpRequest {
         return "METHOD : " + method + "\n"
                 + "REQUEST URL : " + requestURL  + "\n"
                 + "HTTP VERSION : " + httpVersion + "\n"
-                + headerData.toString();
+                + headers.toString();
     }
 }
