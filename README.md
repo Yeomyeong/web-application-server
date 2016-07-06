@@ -50,6 +50,10 @@ POST 메서드의 경우에는 헤더의 Contents-length 만큼 읽어오도록 
 ### 요구사항 7 - stylesheet 적용
 * HttpRequest Header의 Accept를 가지고 response의 content-type 을 설정하도록 수정
 
+### 리펙토링 1
+* HttpRequest 테스트 추가 ( GET 메서드일 경우, POST 메서드일 경우, CSS 파일일 경우)
+* HttpRequest 에서 path를 가져올 때 host 삭제하는 로직 추가
+
 ##현재 문제 (2016.07.06)
 * 로그인 실패 페이지가 안됨.
 * Cookie 컨트롤이 안됨.
