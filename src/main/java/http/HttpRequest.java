@@ -33,18 +33,9 @@ public class HttpRequest {
         parse(connectionIn);
     }
 
-    public HttpRequest(String headerText) {
-        parse( headerText);
-    }
-
     private void parse(InputStream connectionIn) {
         BufferedReader reader = new BufferedReader(new InputStreamReader(connectionIn));
 
-        parse(reader);
-    }
-
-    private void parse(String headerText) {
-        BufferedReader reader = new BufferedReader(new StringReader(headerText));
         parse(reader);
     }
 
@@ -69,16 +60,17 @@ public class HttpRequest {
                 }
             }
 
+            String host = headerData.get("Host");
+            String path = requestURL.replaceAll("http[s]?://", "").replaceAll(host, "");
+            this.path = path;
             if ("POST".equals(method)) {
                 int contentLength = Integer.parseInt(headerData.get("Content-Length"));
                 this.data = IOUtils.readData(reader, contentLength);
-                this.path = requestURL;
             } else if ("GET".equals(method)) {
                 int splitIndex = requestURL.indexOf("?");
-                this.path = requestURL;
                 if (splitIndex > 0) {
-                    this.path = requestURL.substring(0, splitIndex);
-                    this.data = requestURL.substring(splitIndex + 1);
+                    this.path = path.substring(0, splitIndex);
+                    this.data = path.substring(splitIndex + 1);
                 }
             }
             this.putIntoParameter();

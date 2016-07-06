@@ -1,52 +1,50 @@
 package http;
 
-import org.junit.Before;
 import org.junit.Test;
 
+import java.io.FileInputStream;
+
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static util.StringUtil.decode;
 
 /**
  * Created by wymstar on 6/30/16.
  */
 public class HttpRequestTest {
-    HttpRequest header;
+    HttpRequest request;
 
-    @Before
-    public void setup() {
-        header = new HttpRequest("GET /index.html HTTP/1.1\n" +
-                "Host: localhost:8080\n" +
-                "Connection: keep-alive\n" +
-                "Cache-Control: max-age=0\n" +
-                "Upgrade-Insecure-Requests: 1\n" +
-                "User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.84 Safari/537.36\n" +
-                "Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8\n" +
-                "Accept-Encoding: gzip, deflate, sdch\n" +
-                "Accept-Language: ko-KR,ko;q=0.8,en-US;q=0.6,en;q=0.4\n" +
-                "Cookie: JSESSIONID=7703E0693FE97516DE16B15866E75E42");
+    @Test
+    public void test_GET() throws Exception{
+        request = new HttpRequest(new FileInputStream("./src/test/resources/http/httpRequest_GET.txt"));
+        assertEquals(request.getMethod(), "GET");
+        assertEquals(request.getPath(), "/index.html");
+        assertEquals(request.getHttpVersion(), "HTTP/1.1");
+        assertEquals(request.getHeaderData("Host"), "localhost:8080");
+        assertEquals(request.getCookie("JSESSIONID"), "7703E0693FE97516DE16B15866E75E42");
+        assertTrue(request.getHeaderData("Accept").contains("text/html"));
+
     }
 
     @Test
-    public void test_method() {
-        assertEquals(header.getMethod(), "GET");
+    public void test_POST() throws Exception{
+        request = new HttpRequest(new FileInputStream("./src/test/resources/http/httpRequest_POST.txt"));
+        assertEquals(request.getMethod(), "POST");
+        assertEquals(request.getPath(), "/user/create");
+        assertEquals(request.getHttpVersion(), "HTTP/1.1");
+        assertEquals(request.getHeaderData("Host"), "localhost:8080");
+        assertEquals(request.getCookie("_ga"), "GA1.1.1738595458.1446798258");
+
+        assertEquals(request.getParameter("userId"), "aaaa");
+        assertEquals(decode(request.getParameter("password")), "1234");
+
     }
 
     @Test
-    public void test_requestURI() {
-        assertEquals(header.getRequestURL(), "/index.html");
-    }
-
-    @Test
-    public void test_httpVersion() {
-        assertEquals(header.getHttpVersion(), "HTTP/1.1");
-    }
-
-    @Test
-    public void test_host() {
-        assertEquals(header.getHeaderData("Host"), "localhost:8080");
-    }
-
-    @Test
-    public void test_cookie() {
-        assertEquals(header.getHeaderData("Cookie"), "JSESSIONID=7703E0693FE97516DE16B15866E75E42");
+    public void test_CSS() throws Exception{
+        request = new HttpRequest(new FileInputStream("./src/test/resources/http/httpRequest_CSS.txt"));
+        assertEquals(request.getMethod(), "GET");
+        assertEquals(request.getPath(), "/css/styles.css");
+        assertTrue(request.getHeaderData("Accept").contains("text/css"));
     }
 }

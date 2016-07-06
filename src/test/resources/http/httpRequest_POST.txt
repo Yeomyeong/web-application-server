@@ -1,0 +1,17 @@
+POST http://localhost:8080/user/create HTTP/1.1
+Host: localhost:8080
+Proxy-Connection: keep-alive
+Content-Length: 80
+Pragma: no-cache
+Cache-Control: no-cache
+Origin: http://localhost:8080
+Upgrade-Insecure-Requests: 1
+User-Agent: Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.76 Mobile Safari/537.36
+Content-Type: application/x-www-form-urlencoded
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8
+Referer: http://localhost:9090/user/form.html
+Accept-Encoding: gzip, deflate
+Accept-Language: ko-KR,ko;q=0.8,en-US;q=0.6,en;q=0.4
+Cookie: M_NEW_GUIDE=true; _ga=GA1.1.1738595458.1446798258
+
+userId=aaaa&password=1234&name=%EC%95%84%EC%95%84%EC%95%84&email=aaaa%40mail.net
