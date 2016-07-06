@@ -11,7 +11,7 @@ public class WebServer {
 	private static final int DEFAULT_PORT = 9090;
 	
     public static void main(String args[]) throws Exception {
-        int port = 0;
+        int port;
         if (args == null || args.length == 0) {
             port = DEFAULT_PORT; 
         } else {

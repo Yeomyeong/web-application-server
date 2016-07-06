@@ -8,8 +8,8 @@ import http.HttpResponse;
  * Created by wymstar on 7/6/16.
  */
 public class RequestMapper {
-    public static Action createAction(HttpRequest request, HttpResponse response) {
-        if (request.getRequestURL().startsWith("/user/create")) {
+    public static Action createAction(HttpRequest request) {
+        if (request.getPath().equals("/user/create")) {
             return new SignInAction();
         } else if (request.getPath().equals("/user/login")) {
             return new LogInAction();

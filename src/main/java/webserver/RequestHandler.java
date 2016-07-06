@@ -27,7 +27,7 @@ public class RequestHandler extends Thread {
             HttpRequest request = new HttpRequest(in);
 			HttpResponse response = new HttpResponse(out);
 
-            Action action = RequestMapper.createAction(request, response);
+            Action action = RequestMapper.createAction(request);
             action.act(request, response);
 
 		} catch (IOException e) {
