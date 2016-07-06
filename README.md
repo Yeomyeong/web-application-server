@@ -54,6 +54,10 @@ POST 메서드의 경우에는 헤더의 Contents-length 만큼 읽어오도록 
 * HttpRequest 테스트 추가 ( GET 메서드일 경우, POST 메서드일 경우, CSS 파일일 경우)
 * HttpRequest 에서 path를 가져올 때 host 삭제하는 로직 추가
 
+### 리펙토링 2
+* HttpResponse 테스트 추가
+* 테스트 작성중에 쿠키 관련 버그 확인 !!
+
 ##현재 문제 (2016.07.06)
 * 로그인 실패 페이지가 안됨.
 * Cookie 컨트롤이 안됨.

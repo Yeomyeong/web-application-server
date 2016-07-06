@@ -5,6 +5,7 @@ import org.junit.Before;
 import org.junit.Test;
 import testhelper.TestUtil;
 
+import java.io.File;
 import java.io.FileOutputStream;
 
 /**
@@ -12,10 +13,11 @@ import java.io.FileOutputStream;
  */
 public class HttpResponseTest {
     private HttpResponse response;
-    private String filename = "./src/test/resources/http/response/httpResponse.txt";
+    private String filename = "./src/test/resources/http/response/testHttpResponse.txt";
 
     @Before
     public void setup () throws Exception {
+
         response = new HttpResponse(new FileOutputStream(filename));
     }
 
