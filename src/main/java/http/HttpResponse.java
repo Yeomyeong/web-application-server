@@ -6,7 +6,6 @@ import org.slf4j.LoggerFactory;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -44,7 +43,7 @@ public class HttpResponse {
             dos.writeBytes("\r\n");
             dos.flush();
         } catch (IOException e) {
-            log.error(e.getMessage());
+            log.error(e.getMessage(), e);
         }
     }
 
@@ -64,7 +63,7 @@ public class HttpResponse {
             responseSetCookie();
             dos.writeBytes("\r\n");
         } catch (IOException e) {
-            log.error(e.getMessage());
+            log.error(e.getMessage(), e);
         }
     }
 
@@ -76,7 +75,7 @@ public class HttpResponse {
             responseSetCookie();
             dos.writeBytes("\r\n");
         } catch (IOException e) {
-            log.error(e.getMessage());
+            log.error(e.getMessage(), e);
         }
     }
 
@@ -86,18 +85,19 @@ public class HttpResponse {
                 dos.writeBytes("Set-Cookie: " + writeCookies(cookies)+ "\r\n");
             }
         } catch (IOException e) {
-            log.error(e.getMessage());
+            log.error(e.getMessage(), e);
         }
     }
 
     private String writeCookies(Map<String, String> cookies) {
         StringBuilder cookieString = new StringBuilder();
-        for (String key : cookies.keySet()) {
-            String value = cookies.get(key);
+        for (Map.Entry pair : cookies.entrySet()) {
             if (cookieString.length() == 0)
-                cookieString.append(key).append("=").append(value);
+                cookieString.append(pair.getKey())
+                        .append("=").append(pair.getValue());
             else
-                cookieString.append("; ").append(key).append("=").append(value);
+                cookieString.append("; ").append(pair.getKey())
+                        .append("=").append(pair.getValue());
         }
         return cookieString.toString();
     }
@@ -107,7 +107,7 @@ public class HttpResponse {
             dos.write(body, 0, body.length);
             dos.flush();
         } catch (IOException e) {
-            log.error(e.getMessage());
+            log.error(e.getMessage(), e);
         }
     }
 

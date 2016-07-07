@@ -2,20 +2,21 @@ package webserver;
 
 import action.*;
 import http.HttpRequest;
-import http.HttpResponse;
 
 /**
  * Created by wymstar on 7/6/16.
  */
 public class RequestMapper {
+    private RequestMapper() {}
+
     public static Action createAction(HttpRequest request) {
-        if (request.getPath().equals("/user/create")) {
+        if ("/user/create".equals(request.getPath())) {
             return new SignInAction();
-        } else if (request.getPath().equals("/user/login")) {
+        } else if ("/user/login".equals(request.getPath())) {
             return new LogInAction();
-        } else if (request.getPath().equals("/user/list")) {
+        } else if ("/user/list".equals(request.getPath())) {
             return new UserListAction();
-        } else if (request.getPath().equals("/user/logout")) {
+        } else if ("/user/logout".equals(request.getPath())) {
             return new LogOutAction();
         } else {
             return new StaticFileReadAction();

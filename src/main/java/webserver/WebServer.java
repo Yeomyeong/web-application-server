@@ -10,7 +10,7 @@ public class WebServer {
 	private static final Logger log = LoggerFactory.getLogger(WebServer.class);
 	private static final int DEFAULT_PORT = 9090;
 	
-    public static void main(String args[]) throws Exception {
+    public static void main(String[] args) throws Exception {
         int port;
         if (args == null || args.length == 0) {
             port = DEFAULT_PORT; 

@@ -17,7 +17,7 @@ public class HttpRequestTest {
     @Test
     public void test_GET() throws Exception{
         request = new HttpRequest(new FileInputStream("./src/test/resources/http/request/httpRequest_GET.txt"));
-        assertEquals(request.getMethod(), "GET");
+        assertEquals(request.getMethod(), HttpMethod.GET);
         assertEquals(request.getPath(), "/index.html");
         assertEquals(request.getHttpVersion(), "HTTP/1.1");
         assertEquals(request.getHeader("Host"), "localhost:8080");
@@ -29,7 +29,7 @@ public class HttpRequestTest {
     @Test
     public void test_POST() throws Exception{
         request = new HttpRequest(new FileInputStream("./src/test/resources/http/request/httpRequest_POST.txt"));
-        assertEquals(request.getMethod(), "POST");
+        assertEquals(request.getMethod(), HttpMethod.POST);
         assertEquals(request.getPath(), "/user/create");
         assertEquals(request.getHttpVersion(), "HTTP/1.1");
         assertEquals(request.getHeader("Host"), "localhost:8080");
@@ -43,7 +43,7 @@ public class HttpRequestTest {
     @Test
     public void test_CSS() throws Exception{
         request = new HttpRequest(new FileInputStream("./src/test/resources/http/request/httpRequest_CSS.txt"));
-        assertEquals(request.getMethod(), "GET");
+        assertEquals(request.getMethod(), HttpMethod.GET);
         assertEquals(request.getPath(), "/css/styles.css");
         assertTrue(request.getHeader("Accept").contains("text/css"));
     }

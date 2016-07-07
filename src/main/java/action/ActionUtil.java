@@ -15,6 +15,8 @@ import java.io.IOException;
 public class ActionUtil {
     static Logger log = LoggerFactory.getLogger(ActionUtil.class);
 
+    private ActionUtil() {}
+
     static void readFile(HttpResponse response, String fileName) {
         readFile(response, fileName, "");
     }
