@@ -58,7 +58,12 @@ POST 메서드의 경우에는 헤더의 Contents-length 만큼 읽어오도록 
 * HttpResponse 테스트 추가
 * 테스트 작성중에 쿠키 관련 버그 확인 !!
 
+### 리펙토링 3
+* HttpRequest parse 메서드 리펙토링
+* HttpMethod enum 추가
+* sonarlint 로 코드를 체크하고 수정
+
 ##현재 문제 (2016.07.06)
 * 로그인 실패 페이지가 안됨.(해결 완료)
+* 의미있는 테스트 코드가 거의 없음 (해결완료).
 * Cookie 컨트롤이 안됨.
-* 의미있는 테스트 코드가 거의 없음(HttpRequestTest, HttpResponseTest 추가).
