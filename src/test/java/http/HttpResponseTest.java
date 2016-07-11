@@ -70,7 +70,7 @@ public class HttpResponseTest {
     }
 
     @Test
-    public void test_removeCookie() throws Exception {
+    public void  test_removeCookie() throws Exception {
         response.addCookie("logined", "true");
         response.addCookie("displayAd", "true");
         response.addCookie("userType", "common");

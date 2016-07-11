@@ -13,9 +13,11 @@ public class RequestHandler extends Thread {
 	private static final Logger log = LoggerFactory.getLogger(RequestHandler.class);
 	
 	private Socket connection;
+    private RequestMapping requestMapping;
 
-	public RequestHandler(Socket connectionSocket) {
+	public RequestHandler(Socket connectionSocket, RequestMapping requestMapping) {
 		this.connection = connectionSocket;
+        this.requestMapping = requestMapping;
 	}
 
 	@Override
@@ -28,7 +30,7 @@ public class RequestHandler extends Thread {
             HttpRequest request = new HttpRequest(in);
 			HttpResponse response = new HttpResponse(out);
 
-            Action action = RequestMapper.createAction(request);
+            Action action = requestMapping.getAction(request);
             action.act(request, response);
 
 		} catch (IOException e) {
